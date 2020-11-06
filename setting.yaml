@@ -1,0 +1,52 @@
+ENV: dev  # 环境，线上环境：prod、 测试环境： dev
+BaseUrl: http://127.0.0.1  # 测试环境服务地址
+Port: 8888  #端口
+LogFile: /data/logs/ask.log   # 日志文件
+ShowSql: false  # 是否打sql
+StaticPath: ./test.log   # 根路径下的静态文件目录，可以配置绝对路径
+
+# 数据库连接
+MysqlUrl: root@123456@tcp(localhost:3306)/ask?charset=utf8mb4&parseTime=True&loc=Local
+
+# sentry NDS
+Sentry: http://cf75551efdd64a0abd4de7d2cc1da45a@154.91.197.66:9000/3
+
+# JWT 密钥
+JWTKey: zzxxyy123
+
+# github登录配置
+Github:
+  ClientID: 14e54e01c701c3dd7269
+  ClientSecret:  77c8b9c07f7ffddbdee27f0e070e8dd3ef9bc1b4
+
+# QQ登录配置
+QQLogin:
+  AppID:
+  AppSecret:
+
+# 图片资源上传OSS配置
+Uploader:
+  # 启用上传方式
+  Enable: Oss
+  QiNiuYunOss:
+    QiNiuAccessKey: 3hbl1YOcVTeyYsHOxvT73OpT-zK5jRBPda8tgCv_
+    QiNiuSecretKey: TWYbwJ9Y07XNCu0BB7d-6Ek1u5qHEe8D9uWD2DHU
+    QiNiuBucketName: paid-ask
+
+# SMS 短信配置
+Sms:
+  SecretID: AKIDqeEYcQL1OVlskMyrkz5vVnpa4INCcQt6
+  SecretKey: 4rPhjY7Bl69wSirpY3HFLAj11mLegSxl
+  SmsSDKAppID: 1400432292
+  Sign: 破栈问答
+  TemplateID: 737166
+
+# 邮箱设置
+Smtp:
+  Host: smtp.163.com
+  Port: 465
+  Username: 18328457630@163.com
+  Password: xiaolou123
+  SSL: true
+
+

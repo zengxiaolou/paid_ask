@@ -8,36 +8,48 @@ TIME:    2020/10/26-14:53
 package main
 
 import (
-	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/context"
+	"flag"
+	"github.com/mlogclub/simple"
+	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"log"
+	"os"
+	"paid_ask/config"
+	"paid_ask/model"
+	"time"
 )
 
-//
-//func main() {
-//	app := iris.New()
-//	app.Handle("GET","/", func(context context.Context) {
-//		_, _ = context.WriteString("<h1>Welcome</h1>")
-//	})
-//	app.Handle("GET","/ping", func(context context.Context) {
-//		_, _ = context.JSON(iris.Map{"message": "hello"})
-//	})
-//	_ = app.Run(iris.Addr(":8002"))
-//}
+var configFile = flag.String("config", "./setting.yaml", "配置文件路径")
+
+func init()  {
+	flag.Parse()
+	// 初始化配置
+	conf := config.Init(*configFile)
+
+	// gorm 配置
+	gormConf := &gorm.Config{}
+
+	// 初始化日志
+	if file, err := os.OpenFile(conf.LogFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); err == nil {
+		logrus.SetOutput(file)
+		if conf.ShowSql {
+			gormConf.Logger = logger.New(log.New(file, "\r\n", log.LstdFlags), logger.Config{
+				SlowThreshold: time.Second,
+				Colorful: true,
+				LogLevel: logger.Info,
+			})
+		}
+	}else {
+		logrus.Error(err)
+	}
+
+	// 连接数据库
+	if err := simple.OpenDB(conf.MySqlUrl, gormConf, 10, 20, model.Models...); err != nil {
+		logrus.Error(err)
+	}
+}
 
 func main()  {
-	app := iris.New()
-	app.Get("/", func(context context.Context) {
-		_,_ = context.HTML("<b>hello</b>")
-	})
-	app.Configure(iris.WithConfiguration(iris.Configuration{DisableStartupLog: false}))
-	_ = app.Run(iris.Addr(":8002"), iris.WithConfiguration(iris.Configuration{
-		DisableInterruptHandler: false,
-		DisablePathCorrection: false,
-		EnablePathEscape: false,
-		FireMethodNotAllowed: false,
-		DisableBodyConsumptionOnUnmarshal: false,
-		DisableAutoFireStatusCode: false,
-		TimeFormat: "Mon, 02 Jan 2006 15:04:05 GMT",
-		Charset: "UTF-8",
-	}))
+	app.StartOn()
 }
